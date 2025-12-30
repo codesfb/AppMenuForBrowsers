@@ -1,3 +1,13 @@
+body {
+    /* Define uma largura e altura mínima para a janelinha da extensão */
+    width: 400px; 
+    min-height: 500px;
+    margin: 0;
+    padding: 10px;
+    background-color: #f4f4f9;
+    font-family: sans-serif;
+}
+
 .containerApps {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
