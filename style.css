@@ -1,0 +1,135 @@
+.containerApps {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px; 
+    padding: 20px;
+}
+
+.app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    width: 100px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    text-align: center;
+}
+
+
+
+#btn-add {
+     width: 100px;
+    padding: 12px;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+
+
+
+}
+
+#btn-remove {
+    
+    padding: 12px;
+    background-color: #e75c5c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+
+
+
+}
+
+
+
+#btn-submit {
+    width: 80px;
+    padding: 12px;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#btn-submit:hover {
+    background-color: #5b4bc4;}
+
+
+.modal-input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 15px 0;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none; 
+    transition: all 0.3s ease; 
+    box-sizing: border-box; 
+}
+
+
+.modal-input:focus {
+    border-color: #6c5ce7; 
+    box-shadow: 0 0 8px rgba(108, 92, 231, 0.2);
+    transform: translateY(-1px);
+}
+
+
+
+
+.containerAddApps {
+    /* 1. Fixa na tela: não importa o quanto você role, ele não sai do lugar */
+    position: fixed; 
+    
+    /* 2. Cobre tudo: estica o fundo escuro do canto superior esquerdo até o fim */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* 3. Camada Superior: garante que ele fique na frente de todos os outros elementos */
+    z-index: 9999; 
+    
+    /* Extra: Fundo escuro e centralização */
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none; /* Começa escondido */
+    justify-content: center;
+    align-items: center;
+}
+
+/* Quando adicionamos a classe 'active' via JS */
+.containerAddApps.active {
+    display: flex;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Sombra para dar profundidade */
+    width: 320px;
+    text-align: center;
+}
+
+.input-error {
+    border-color: #ff7675 !important;
+    animation: shake 0.2s ease-in-out 0s 2;
+}
+
+@keyframes shake {
+    0% { margin-left: 0; }
+    25% { margin-left: 0.5rem; }
+    75% { margin-left: -0.5rem; }
+    100% { margin-left: 0; }
+}
