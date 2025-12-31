@@ -13,7 +13,10 @@ function el(tag, atributs={}, ...children){
     return elemento;
 
 }
-
+function fecharModal() {
+    containerAdd.classList.remove("active");
+    containerAdd.textContent = "";
+}
 
 const containerAdd = document.querySelector(".containerAddApps");
 const containerApps = document.querySelector(".containerApps");
@@ -39,6 +42,7 @@ let modoRemocao = false;
 
 function alternarAvisoRemocao(mostrar) {
     const container = document.querySelector(".containerApps");
+    const btns = document.querySelector("#btns");
     const avisoId = "aviso-remocao";
     let aviso = document.getElementById(avisoId);
 
@@ -46,9 +50,10 @@ function alternarAvisoRemocao(mostrar) {
         if (!aviso) {
             aviso = el("div", { 
                 id: avisoId, 
-                style: { background: "#ff4444", color: "white", padding: "10px", textAlign: "center", borderRadius: "5px", marginBottom: "10px" } 
+                style: { 
+                        background: "#ff4444", color: "white", padding: "10px", textAlign: "center", borderRadius: "5px", marginBottom: "10px" } 
             }, "Select a website  to remove");
-            container.append(aviso); 
+            btns.append(aviso); 
         }
     } else if (aviso) {
         aviso.remove();
@@ -67,37 +72,44 @@ function removeApp(urlParaRemover) {
         
 
 function mostrarModalConfirmacao(url) {
-    const modal = el("div", { class: "containerAddApps active", style:{padding: "20px",
-            borderRadius: "8px",
+    containerAdd.textContent = "";
+    containerAdd.classList.add("active");
+    const cardConfirmacao = el("div", { class: "card",style:{padding: "20px",
+            borderRadius: "8px",    
             boxShadow: "0 2px 5px rgba(0,0,0,0.2)"}
- }, 
-        el("div", { class: "card" },
+            }, 
+        
             el("p", {style: { color: "gray"}}, `Are you sure you want do remove ${url}?`),
             el("button", { 
-                style: {border: "none",
+                style: {
+                    cursor:"pointer",
+                    border: "none",
                      background: "#e75c5c",
                      borderRadius: "8px", 
                      color: "white",
                     padding: "12px" },
                 onclick: () => {
                     removeApp(url);
-                    modal.remove();
+                    fecharModal();
                     desativarModoRemocao();
                 }
             }, "yes, remove"),
-            el("button", {style:{border: "none",
+            el("button", {style:{
+                cursor:"pointer",
+                border: "none",
                      background: "#808080ff",
                      borderRadius: "8px", 
                      color: "white",
                     padding: "12px",
                     margin:"12px"        
                 }, 
-                onclick: () => modal.remove() 
+                onclick:fecharModal
             }, "Cancel")
-        )
+        
     );
-    document.body.append(modal);
+    containerAdd.append(cardConfirmacao);
 }
+
 
 
 function salvaAppLocal(newlink){
@@ -171,11 +183,23 @@ function addApp() {
                             }
                               */  
                             app(valor);
+                            fecharModal();
                             containerAdd.classList.remove("active");
                             document.querySelector(".containerAddApps").textContent = "";
 
                 }
-            }, "Add")
+            }, "Add"),
+            el("button", {style:{
+                cursor:"pointer",
+                border: "none",
+                     background: "#808080ff",
+                     borderRadius: "8px", 
+                     color: "white",
+                    padding: "12px",
+                    margin:"12px"        
+                }, 
+                onclick:fecharModal
+            }, "Cancel")
         )
     );
 
@@ -197,17 +221,11 @@ function app(link){
 }
 
 const btn = document.querySelector("#btn-add");
-btn.addEventListener("click", ()=>{
-        containerAdd.classList.add("active");
-        const add = addApp();
-       
-        containerAdd.prepend(add);
-
-        
-
-        
-       
-
+btn.addEventListener("click", () => {
+    containerAdd.textContent = ""; // Limpa lixo antigo
+    containerAdd.classList.add("active");
+    const addCard = addApp();
+    containerAdd.append(addCard);
 });
 
 
