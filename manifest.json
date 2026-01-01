@@ -1,10 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "FMenu Dashboard",
+  "name": "Menu Dashboard",
   "version": "1.0",
-  "description": "Meu menu de apps personalizados",
-  "action": {
-    "default_popup": "index.html"
+  "description": "Menu of applications for browsers with a modern look.",
+  "icons": {
+    "16": "assets/icon.png",
+    "48": "assets/icon.png",
+    "128": "assets/icon.png"
   },
-  "permissions": ["storage"]
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Menu Dashboard",
+    "default_icon": {
+      "16": "assets/icon.png",
+      "48": "assets/icon.png",
+      "128": "assets/icon.png"
+    }
+  },
+  "permissions": [
+    "storage",
+    "theme"
+  ]
 }

@@ -1,3 +1,50 @@
+document.addEventListener('DOMContentLoaded', () => {
+    function aplicarTema(r, g, b) {
+        const corCSS = `rgb(${r}, ${g}, ${b})`;
+        document.documentElement.style.setProperty('--bg-system', corCSS);
+
+        const brilho = Math.round(((parseInt(r) * 299) + (parseInt(g) * 587) + (parseInt(b) * 114)) / 1000);
+        
+        if (brilho > 125) {
+            document.documentElement.style.setProperty('--text-system', '#000000');
+            document.documentElement.style.setProperty('--hover-bg', 'rgba(0,0,0,0.1)');
+            document.documentElement.style.setProperty('--card-bg', '#ffffff');
+            document.documentElement.style.setProperty('--card-border', '#dadce0');
+        } else {
+            document.documentElement.style.setProperty('--text-system', '#ffffff');
+            document.documentElement.style.setProperty('--hover-bg', 'rgba(255,255,255,0.1)');
+            document.documentElement.style.setProperty('--card-bg', `rgba(${r+20}, ${g+20}, ${b+20}, 1)`);
+            document.documentElement.style.setProperty('--card-border', 'rgba(255,255,255,0.1)');
+        }
+        console.log("Cor aplicada:", corCSS);
+    }
+
+    if (chrome.theme && chrome.theme.getCurrent) {
+        chrome.theme.getCurrent((theme) => {
+            console.log("Tema detectado:", theme); // Debug: veja o que o Brave retorna
+
+            if (theme && theme.colors) {
+                // Tenta pegar a cor nesta ordem de prioridade
+                const corEncontrada = 
+                    theme.colors.toolbar || 
+                    theme.colors.frame || 
+                    theme.colors.header || 
+                    theme.colors.ntp_background;
+
+                if (corEncontrada) {
+                    aplicarTema(corEncontrada[0], corEncontrada[1], corEncontrada[2]);
+                } else {
+                    console.log("Tema existe, mas sem cores definidas. Usando CSS padrão.");
+                }
+            } else {
+                console.log("Nenhum tema personalizado detectado (Modo Padrão do Brave).");
+            }
+        });
+    }
+});
+
+
+
 function el(tag, atributs={}, ...children){
     const elemento = document.createElement(tag);
     for (const key in atributs) {
@@ -13,13 +60,16 @@ function el(tag, atributs={}, ...children){
     return elemento;
 
 }
+
+
+
+
+
 function fecharModal() {
     containerAdd.classList.remove("active");
     containerAdd.textContent = "";
 }
 
-const containerAdd = document.querySelector(".containerAddApps");
-const containerApps = document.querySelector(".containerApps");
 
 
 function eUmLinkValido(text){
@@ -41,25 +91,35 @@ function extrairNomeLimpo(url) {
 let modoRemocao = false;
 
 function alternarAvisoRemocao(mostrar) {
-    const container = document.querySelector(".containerApps");
-    const btns = document.querySelector("#btns");
-    const avisoId = "aviso-remocao";
-    let aviso = document.getElementById(avisoId);
+    const statusContainer = document.querySelector("#remover-status");
+    if (!statusContainer) return;
+    const avisoId = "aviso-area-interna";
+    
+    statusContainer.innerHTML = ""; 
 
     if (mostrar) {
-        if (!aviso) {
-            aviso = el("div", { 
-                id: avisoId, 
-                style: { 
-                        background: "#ff4444", color: "white", padding: "10px", textAlign: "center", borderRadius: "5px", marginBottom: "10px" } 
-            }, "Select a website  to remove");
-            btns.append(aviso); 
-        }
-    } else if (aviso) {
-        aviso.remove();
+        
+        const areaAviso = el("div", { 
+            id: avisoId, 
+            style: { display: "flex", width: "100%", gap: "10px", alignItems: "center", marginBottom: "10px" } 
+        }, 
+            el("div", { class: "aviso-estilo" }, "Select an app to remove"),
+            el("button", { 
+                class: "btn-cancelar-remocao",
+                onclick: () => desativarModoRemocao() 
+            }, "Cancel")
+        );
+        
+        statusContainer.append(areaAviso);
     }
 }
 
+
+
+function desativarModoRemocao() {
+    modoRemocao = false;
+    alternarAvisoRemocao(false);
+}
 
 function removeApp(urlParaRemover) {
     let links = JSON.parse(localStorage.getItem("mylinks")) || [];
@@ -72,41 +132,33 @@ function removeApp(urlParaRemover) {
         
 
 function mostrarModalConfirmacao(url) {
-    containerAdd.textContent = "";
+    containerAdd.textContent = "";  
     containerAdd.classList.add("active");
-    const cardConfirmacao = el("div", { class: "card",style:{padding: "20px",
-            borderRadius: "8px",    
-            boxShadow: "0 2px 5px rgba(0,0,0,0.2)"}
-            }, 
-        
-            el("p", {style: { color: "gray"}}, `Are you sure you want do remove ${url}?`),
+    const cardConfirmacao = el("div", { class: "card" }, 
+        el("p", { style: { color: "#e4e8ec", marginBottom: "20px" } }, `Are you sure you want to remove ${url}?`),
+        el("div", { style: { display: "flex", gap: "10px", justifyContent: "center" } },
             el("button", { 
                 style: {
-                    cursor:"pointer",
-                    border: "none",
-                     background: "#e75c5c",
-                     borderRadius: "8px", 
-                     color: "white",
-                    padding: "12px" },
+                    cursor: "pointer", border: "none", background: "#e75c5c",
+                    borderRadius: "8px", color: "white", padding: "12px", fontWeight: "bold"
+                },
                 onclick: () => {
                     removeApp(url);
                     fecharModal();
                     desativarModoRemocao();
                 }
-            }, "yes, remove"),
-            el("button", {style:{
-                cursor:"pointer",
-                border: "none",
-                     background: "#808080ff",
-                     borderRadius: "8px", 
-                     color: "white",
-                    padding: "12px",
-                    margin:"12px"        
+            }, "Yes, remove"),
+            el("button", { 
+                style: {
+                    cursor: "pointer", border: "none", background: "#4a4a4e",
+                    borderRadius: "8px", color: "white", padding: "12px"
                 }, 
-                onclick:fecharModal
+                onclick: fecharModal
             }, "Cancel")
-        
+        )
     );
+    
+    
     containerAdd.append(cardConfirmacao);
 }
 
@@ -128,7 +180,7 @@ function renderizaApps(){
         return    
     }
     sites.forEach(site => {
-     const card = el("div", { class: "app-card" },
+     const card = el("div", { class: `app-card ${modoRemocao ? 'modo-excluir' : ''}` },
                                 el("a", { href: `https://${site.url}`, target: "_blank" },
                                 el("img", { src: site.logo }),
                                 el("p", {}, extrairNomeLimpo(site.url))
@@ -220,9 +272,16 @@ function app(link){
     
 }
 
-const btn = document.querySelector("#btn-add");
-btn.addEventListener("click", () => {
-    containerAdd.textContent = ""; // Limpa lixo antigo
+
+const containerAdd = document.querySelector(".containerAddApps");
+const containerApps = document.querySelector(".containerApps");
+
+
+const btnAdd = document.querySelector("#btn-add");
+
+//console.log(containerAdd.textContent)
+btnAdd.addEventListener("click", () => {
+    containerAdd.textContent = ""; 
     containerAdd.classList.add("active");
     const addCard = addApp();
     containerAdd.append(addCard);
@@ -232,15 +291,11 @@ btn.addEventListener("click", () => {
 
 const btnRemoverModo = document.querySelector("#btn-remove"); 
 
+
 btnRemoverModo.addEventListener("click", () => {
-    modoRemocao = !modoRemocao;
-    
-    if (modoRemocao) {
-        btnRemoverModo.textContent = "Cancel Remove";
-        alternarAvisoRemocao(true);
-    } else {
-        desativarModoRemocao();
-    }
+    modoRemocao = true;
+    alternarAvisoRemocao(true);
+    settingsMenu.classList.remove("active"); 
 });
 
 function desativarModoRemocao() {
@@ -249,6 +304,23 @@ function desativarModoRemocao() {
     alternarAvisoRemocao(false);
 }
 
+const settingsBtn = document.querySelector("#settings-menu-btn");
+const settingsMenu = document.querySelector("#settings-menu");
 
+
+settingsBtn.addEventListener("click", (e) => {
+    e.stopPropagation(); 
+    settingsMenu.classList.toggle("active");
+});
+
+
+document.addEventListener("click", () => {
+    settingsMenu.classList.remove("active");
+});
+
+
+settingsMenu.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => settingsMenu.classList.remove("active"));
+});
 
 renderizaApps();
