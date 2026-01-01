@@ -33,7 +33,7 @@ That was just made for fun
 ## 📸 Preview
 
 <div align="center">
-  <p><i>  <img src="assets/Screenshot_20251231_214324.png" alt="Project Screenshot" width="600">  
+  <p><i>  <img src="screenshots/Screenshot_20251231_214324.png" alt="Project Screenshot" width="600">  
   
 
 
@@ -41,7 +41,7 @@ That was just made for fun
 
   </i>
   
-  <i>  <img src="assets/Screenshot_20251231_214524.png" alt="Project Screenshot" width="600">  
+  <i>  <img src="screenshots/Screenshot_20251231_214524.png" alt="Project Screenshot" width="600">  
   
 
 
